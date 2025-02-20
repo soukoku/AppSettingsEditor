@@ -15,15 +15,12 @@ public partial class MainWindow : Window
         InitializeComponent();
 
         WeakReferenceMessenger.Default.Register<MainWindow, SelectFolderMessage>(this,
-            static (win, msg) => { msg.Reply(win.ChooseFolderAsync()); });
+            static (win, msg) => { msg.Reply(win.ChooseFolderAsync(msg)); });
     }
 
-    async Task<string?> ChooseFolderAsync()
+    async Task<string?> ChooseFolderAsync(SelectFolderMessage message)
     {
-        var results = await StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
-        {
-            AllowMultiple = false,
-        });
+        var results = await StorageProvider.OpenFolderPickerAsync(message.Options);
         var folder = results.Select(r => r.TryGetLocalPath()).FirstOrDefault();
         return folder;
     }

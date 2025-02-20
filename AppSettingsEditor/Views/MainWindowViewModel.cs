@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using AppSettingsEditor.Messages;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -40,7 +41,8 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     async Task ChooseFolder()
     {
-        var folder = await WeakReferenceMessenger.Default.Send<SelectFolderMessage>();
+        var msg = new SelectFolderMessage(new FolderPickerOpenOptions());
+        var folder = await WeakReferenceMessenger.Default.Send(msg);
         LoadFilesInFolder(folder);
     }
 }
