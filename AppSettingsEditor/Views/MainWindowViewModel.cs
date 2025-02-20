@@ -26,9 +26,11 @@ public partial class MainWindowViewModel : ObservableObject
             foreach (var file in
                      Directory.EnumerateFiles(folder, "appsettings*.json", SearchOption.TopDirectoryOnly)
                          .Where(f => !f.Contains(".deps.") && !f.Contains(".runtimeconfig."))
-                         .OrderBy(Path.GetFileName))
+                         .Select(f => new { Path = f, Parts = f.Split('.') })
+                         .OrderBy(f => f.Parts.Length)
+                         .ThenBy(f => f.Path))
             {
-                Files.Add(new SettingsFileViewModel(file));
+                Files.Add(new SettingsFileViewModel(file.Path));
             }
         }
     }
